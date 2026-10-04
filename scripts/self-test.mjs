@@ -30,10 +30,20 @@ if ([...manifestDescription].length < 80 || [...manifestDescription].length > 24
 if (!/allow_implicit_invocation: true/.test(manifest)) fail('manifest.yaml: policy boolean missing');
 if ((manifest.match(/^  - /gm) ?? []).length < 7) fail('manifest.yaml: expected at least 4 tags and 3 triggers');
 const agent = read('agents/openai.yaml');
-for (const line of ['interface:', 'display_name: 叙事视角诊断与修订', 'icon_small: ../icon-512.png', 'icon_large: ../icon-512.png', 'policy:', 'allow_implicit_invocation: true']) {
+for (const line of ['interface:', 'display_name: "叙事视角诊断与修订"', 'icon_small: "./icon-512.png"', 'icon_large: "./icon-512.png"', 'policy:', 'allow_implicit_invocation: true']) {
   if (!agent.includes(line)) fail(`agents/openai.yaml: missing ${line}`);
 }
 if (!/short_description: .{25,64}/u.test(agent)) fail('agents/openai.yaml: short_description must be 25–64 characters');
+for (const field of ['display_name', 'short_description', 'default_prompt', 'icon_small', 'icon_large']) {
+  const value = agent.match(new RegExp(`^  ${field}: "([^"\\n]+)"$`, 'm'))?.[1];
+  if (!value) fail(`agents/openai.yaml: ${field} must be quoted`);
+  if (field === 'default_prompt' && !value.includes('$novel-pov-repair-cn')) fail('default_prompt must refer to this Skill');
+  if (field === 'short_description' && ([...value].length < 25 || [...value].length > 64)) fail('invalid actual short description length');
+  if (field.startsWith('icon_')) {
+    const resolved = path.resolve(root, value), relative = path.relative(root, resolved);
+    if (relative.startsWith('..') || path.isAbsolute(relative) || !fs.existsSync(resolved)) fail('agent icon must exist inside Skill directory');
+  }
+}
 for (const file of ['README.md', 'README.en.md', 'fixtures/success.md', 'fixtures/failure.md', 'fixtures/forward-success.md', 'fixtures/forward-failure.md', 'fixtures/failure-missing-viewpoint.md', 'fixtures/failure-missing-text.md', 'LICENSE']) {
   if (!fs.existsSync(path.join(root, file))) fail(`missing ${file}`);
 }

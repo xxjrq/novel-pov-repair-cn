@@ -3,7 +3,7 @@ slug: novel-pov-repair-cn
 display_name: 叙事视角诊断与修订
 description: 输入单个章节、场景或短文和指定视角人物，定位叙事视角越界并解释信息边界，再交付不改变情节的最小修改片段。适合第一人称或第三人称限知初稿校对；缺少文本或视角人物时仅列实际缺项，不新增台词、动作或人物知情，无法完整处理的材料明确要求分批。
 icon: icon-512.png
-version: 1.0.0
+version: 1.0.1
 license: MIT
 repository: https://github.com/xxjrq/novel-pov-repair-cn
 tags:
@@ -22,11 +22,11 @@ triggers:
   - 按指定人物视角修订这段场景
   - 找出 POV 跳跃并保留原情节
 interface:
-  display_name: 叙事视角诊断与修订
-  short_description: 检查小说场景的 POV 越界，并保留情节给出最小修订片段
-  default_prompt: 请粘贴一个场景，并说明指定视角人物与人称；我会定位 POV 越界、解释原因，并给出保持情节的最小修改片段。
-  icon_small: ./icon-512.png
-  icon_large: ./icon-512.png
+  display_name: "叙事视角诊断与修订"
+  short_description: "检查小说场景的 POV 越界，并保留情节给出最小修订片段"
+  default_prompt: "使用 $novel-pov-repair-cn 检查我提供的章节、场景或短文及指定视角人物，定位越界并给出保持动作、台词和人物知情的最小修订。"
+  icon_small: "./icon-512.png"
+  icon_large: "./icon-512.png"
 policy:
   allow_implicit_invocation: true
 self_test: node scripts/self-test.mjs
